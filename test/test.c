@@ -4,7 +4,7 @@
 #include <unity.h>
 #include "unity_config.h"
 
-void setUp(void) {}
+void setUp(void) {} //
 
 void tearDown(void) {}
 
