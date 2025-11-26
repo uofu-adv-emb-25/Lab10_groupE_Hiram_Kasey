@@ -1,3 +1,6 @@
+#add_library(hardware_sleep ${CMAKE_HOME_DIRECTORY}/lib/src/rp2_common/pico_sleep/sleep.c)
+#target_include_directories(hardware_sleep PUBLIC ${CMAKE_HOME_DIRECTORY}/lib/src/rp2_common/pico_sleep/sleep.c)
+
 # This is the main binary. List your C files here.
 add_executable(gpio_interrupt
     gpio_interrupt.c
@@ -114,3 +117,59 @@ find_program(PICOTOOL picotool)
 add_custom_target(flash_power ${PICOTOOL} load -f $<TARGET_FILE:power> DEPENDS power)
 
 add_custom_target(openocd_flash_power ${OPENOCD} -s ${OPENOCD_PATH} -f interface/cmsis-dap.cfg -f target/rp2040.cfg -c 'adapter speed 5000; program "$<TARGET_FILE:power>" verify reset exit' DEPENDS power)
+
+
+# hello_dormant_gpio.c
+add_executable(hello_dormant_gpio
+    hello_dormant_gpio.c
+    )
+
+pico_enable_stdio_uart(hello_dormant_gpio 0)
+pico_enable_stdio_usb(hello_dormant_gpio 1)
+
+target_link_libraries(hello_dormant_gpio PRIVATE
+  pico_stdlib
+  pico_multicore
+  pico_async_context_freertos
+  FreeRTOS-Kernel-Heap4
+  hardware_rtc
+  pico_cyw43_arch_none
+  hardware_sleep
+
+)
+
+pico_add_extra_outputs(hello_dormant_gpio)
+
+find_program(OPENOCD openocd)
+find_program(PICOTOOL picotool)
+
+add_custom_target(flash_hello_dormant_gpio ${PICOTOOL} load -f $<TARGET_FILE:hello_dormant_gpio> DEPENDS hello_dormant_gpio)
+
+add_custom_target(openocd_flash_hello_dormant_gpio ${OPENOCD} -s ${OPENOCD_PATH} -f interface/cmsis-dap.cfg -f target/rp2040.cfg -c 'adapter speed 5000; program "$<TARGET_FILE:hello_dormant_gpio>" verify reset exit' DEPENDS hello_dormant_gpio)
+
+# hello_sleep_alarm.c
+add_executable(hello_sleep_alarm
+    hello_sleep_alarm.c
+    )
+
+pico_enable_stdio_uart(hello_sleep_alarm 0)
+pico_enable_stdio_usb(hello_sleep_alarm 1)
+
+target_link_libraries(hello_sleep_alarm PRIVATE
+  pico_stdlib
+  pico_multicore
+  pico_async_context_freertos
+  FreeRTOS-Kernel-Heap4
+  hardware_rtc
+  pico_cyw43_arch_none
+  hardware_sleep
+)
+
+pico_add_extra_outputs(hello_sleep_alarm)
+
+find_program(OPENOCD openocd)
+find_program(PICOTOOL picotool)
+
+add_custom_target(flash_hello_sleep_alarm ${PICOTOOL} load -f $<TARGET_FILE:hello_sleep_alarm> DEPENDS hello_sleep_alarm)
+
+add_custom_target(openocd_flash_hello_sleep_alarm ${OPENOCD} -s ${OPENOCD_PATH} -f interface/cmsis-dap.cfg -f target/rp2040.cfg -c 'adapter speed 5000; program "$<TARGET_FILE:hello_sleep_alarm>" verify reset exit' DEPENDS hello_sleep_alarm)

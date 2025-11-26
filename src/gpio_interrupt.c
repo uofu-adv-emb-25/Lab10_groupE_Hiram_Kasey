@@ -3,7 +3,7 @@
 #include <pico/sync.h>
 
 #define OUT_PIN 0
-#define IN_PIN  15
+#define IN_PIN  1
 
 int toggle = 1;
 void irq_callback(uint gpio, uint32_t event_mask)
@@ -12,9 +12,9 @@ void irq_callback(uint gpio, uint32_t event_mask)
 
     toggle = !toggle;
     if (event_mask & GPIO_IRQ_EDGE_RISE) {
-        gpio_put(OUT_PIN, true);
+        gpio_put(OUT_PIN, 1);
     } else if (event_mask & GPIO_IRQ_EDGE_FALL) {
-        gpio_put(OUT_PIN, false);
+        gpio_put(OUT_PIN, 0);
     }
 }
 
@@ -29,7 +29,7 @@ int main(void)
     gpio_set_dir(OUT_PIN, GPIO_OUT);
     gpio_put(OUT_PIN, toggle);
 
-    gpio_set_irq_enabled_with_callback(IN_PIN, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL , true, irq_callback);
+    gpio_set_irq_enabled_with_callback(IN_PIN, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL , 1, irq_callback);
     while(1) __wfi();
     return 0;
 }
