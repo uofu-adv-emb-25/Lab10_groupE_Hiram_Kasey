@@ -1,3 +1,6 @@
+#add_library(hardware_sleep ${CMAKE_HOME_DIRECTORY}/lib/src/rp2_common/pico_sleep/sleep.c)
+#target_include_directories(hardware_sleep PUBLIC ${CMAKE_HOME_DIRECTORY}/lib/src/rp2_common/pico_sleep/sleep.c)
+
 # This is the main binary. List your C files here.
 add_executable(gpio_interrupt
     gpio_interrupt.c
@@ -131,6 +134,8 @@ target_link_libraries(hello_dormant_gpio PRIVATE
   FreeRTOS-Kernel-Heap4
   hardware_rtc
   pico_cyw43_arch_none
+  hardware_sleep
+
 )
 
 pico_add_extra_outputs(hello_dormant_gpio)
@@ -157,6 +162,7 @@ target_link_libraries(hello_sleep_alarm PRIVATE
   FreeRTOS-Kernel-Heap4
   hardware_rtc
   pico_cyw43_arch_none
+  hardware_sleep
 )
 
 pico_add_extra_outputs(hello_sleep_alarm)
