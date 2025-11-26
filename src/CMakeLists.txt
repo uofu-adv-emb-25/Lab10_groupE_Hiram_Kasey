@@ -89,3 +89,29 @@ find_program(PICOTOOL picotool)
 add_custom_target(flash_task ${PICOTOOL} load -f $<TARGET_FILE:task_delay> DEPENDS task_delay)
 
 add_custom_target(openocd_flash_task ${OPENOCD} -s ${OPENOCD_PATH} -f interface/cmsis-dap.cfg -f target/rp2040.cfg -c 'adapter speed 5000; program "$<TARGET_FILE:task_delay>" verify reset exit' DEPENDS task_delay)
+
+# power
+add_executable(power
+    power.c
+    )
+
+pico_enable_stdio_uart(power 0)
+pico_enable_stdio_usb(power 1)
+
+target_link_libraries(power PRIVATE
+  pico_stdlib
+  pico_multicore
+  pico_async_context_freertos
+  FreeRTOS-Kernel-Heap4
+  hardware_rtc
+  pico_cyw43_arch_none
+)
+
+pico_add_extra_outputs(power)
+
+find_program(OPENOCD openocd)
+find_program(PICOTOOL picotool)
+
+add_custom_target(flash_power ${PICOTOOL} load -f $<TARGET_FILE:power> DEPENDS power)
+
+add_custom_target(openocd_flash_power ${OPENOCD} -s ${OPENOCD_PATH} -f interface/cmsis-dap.cfg -f target/rp2040.cfg -c 'adapter speed 5000; program "$<TARGET_FILE:power>" verify reset exit' DEPENDS power)
