@@ -2,6 +2,9 @@
 #include <pico/stdlib.h>
 #include <pico/sync.h>
 
+
+#define OUT_PIN 0
+#define DELAY_MS 500
 int main(void)
 {
     int toggle = 0;
@@ -10,14 +13,9 @@ int main(void)
     gpio_set_dir(OUT_PIN, GPIO_OUT);
     gpio_put(OUT_PIN, toggle);
 
-    while (true) {
+    while(1) {
         toggle = !toggle;
         gpio_put(OUT_PIN, toggle);
-
-        for(int i = 0; i < 1000e2; i++)
-        {
-            __nop();
-        }
 
         sleep_ms(DELAY_MS);
     }
