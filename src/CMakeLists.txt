@@ -63,3 +63,29 @@ find_program(PICOTOOL picotool)
 add_custom_target(flash_sleep ${PICOTOOL} load -f $<TARGET_FILE:sleep> DEPENDS sleep)
 
 add_custom_target(openocd_flash_sleep ${OPENOCD} -s ${OPENOCD_PATH} -f interface/cmsis-dap.cfg -f target/rp2040.cfg -c 'adapter speed 5000; program "$<TARGET_FILE:sleep>" verify reset exit' DEPENDS sleep)
+
+# task_delay
+add_executable(task_delay
+    task_delay.c
+    )
+
+pico_enable_stdio_uart(task_delay 0)
+pico_enable_stdio_usb(task_delay 1)
+
+target_link_libraries(task_delay PRIVATE
+  pico_stdlib
+  pico_multicore
+  pico_async_context_freertos
+  FreeRTOS-Kernel-Heap4
+  hardware_rtc
+  pico_cyw43_arch_none
+)
+
+pico_add_extra_outputs(task_delay)
+
+find_program(OPENOCD openocd)
+find_program(PICOTOOL picotool)
+
+add_custom_target(flash_task ${PICOTOOL} load -f $<TARGET_FILE:task_delay> DEPENDS task_delay)
+
+add_custom_target(openocd_flash_task ${OPENOCD} -s ${OPENOCD_PATH} -f interface/cmsis-dap.cfg -f target/rp2040.cfg -c 'adapter speed 5000; program "$<TARGET_FILE:task_delay>" verify reset exit' DEPENDS task_delay)
