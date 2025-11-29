@@ -46,6 +46,7 @@ cmake_minimum_required(VERSION 3.13)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(PICO_EXTRAS_PATH ${CMAKE_HOME_DIRECTORY}/lib/pico-extras)
 
 # This sets the variant of the board. We are using the pico_w
 set(PICO_BOARD pico_w CACHE STRING "Board type")
@@ -58,6 +59,8 @@ include(${FREERTOS_PATH}/portable/ThirdParty/GCC/RP2040/FreeRTOS_Kernel_import.c
 
 # This sets up the unity library. They don't provide a library export, so it's defined locally.
 include(unity.cmake)
+
+include(pico_extras_import.cmake)
 
 # This defines your project name, you can name it anything you want.
 project(myproject C CXX ASM)
